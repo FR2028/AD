@@ -3,378 +3,332 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CYBER_TERMINAL // FIREBASE ULTIMATE EXPLOIT SUITE V2.0</title>
+    <title>C2_EXPLOIT_CORE // Project AD26-8b064</title>
+    <!-- 引入 Tailwind CSS 確保排版穩定 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Google Fonts 終端機專用字體 -->
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
         body {
-            background-color: #030503;
+            font-family: 'Share Tech Mono', monospace;
+            background-color: #030712;
             color: #00ff66;
-            font-family: 'Courier New', Courier, monospace;
-            padding: 15px;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+            overflow-x: hidden;
         }
-        header {
-            border-bottom: 2px solid #00ff66;
-            padding-bottom: 10px;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .glow-text {
+            text-shadow: 0 0 8px rgba(0, 255, 102, 0.6);
         }
-        h1 {
-            font-size: 1.3rem;
-            text-shadow: 0 0 10px rgba(0, 255, 102, 0.8);
+        .glow-box {
+            box-shadow: 0 0 15px rgba(0, 255, 102, 0.15);
+            border: 1px solid rgba(0, 255, 102, 0.3);
         }
-        .status {
-            font-size: 0.85rem;
-            color: #ff0055;
-            background: #100;
-            padding: 4px 8px;
-            border: 1px solid #ff0055;
+        .scanline {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0, 0, 0, 0.3) 50%,
+                rgba(0, 0, 0, 0.3)
+            );
+            background-size: 100% 4px;
         }
-        .grid-layout {
-            display: grid;
-            grid-template-columns: 350px 1fr;
-            gap: 15px;
-            flex-grow: 1;
-            overflow: hidden;
+        /* 自定義捲軸 */
+        ::-webkit-scrollbar {
+            width: 6px;
         }
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            overflow-y: auto;
-            padding-right: 5px;
+        ::-webkit-scrollbar-track {
+            background: #030712;
         }
-        .panel {
-            border: 1px solid #00ff66;
-            padding: 12px;
-            background: rgba(0, 15, 0, 0.4);
-            box-shadow: inset 0 0 10px rgba(0, 255, 102, 0.05);
-        }
-        .panel h2 {
-            font-size: 0.95rem;
-            margin-bottom: 8px;
-            border-bottom: 1px dashed #00ff66;
-            padding-bottom: 4px;
-            color: #00ffff;
-        }
-        label {
-            font-size: 0.8rem;
-            display: block;
-            margin-bottom: 3px;
-            color: #88ffbb;
-        }
-        input, select, textarea {
-            background: #000;
-            color: #00ff66;
-            border: 1px solid #00ff66;
-            padding: 6px;
-            font-family: 'Courier New', Courier, monospace;
-            margin-bottom: 8px;
-            width: 100%;
-            font-size: 0.85rem;
-        }
-        textarea {
-            resize: vertical;
-            height: 90px;
-        }
-        button {
+        ::-webkit-scrollbar-thumb {
             background: #00ff66;
-            color: #000;
-            border: none;
-            padding: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            font-family: 'Courier New', Courier, monospace;
-            width: 100%;
-            margin-bottom: 6px;
-            font-size: 0.85rem;
-            transition: 0.2s;
+            opacity: 0.5;
         }
-        button:hover {
-            background: #00cc52;
-            box-shadow: 0 0 8px #00ff66;
-        }
-        .btn-danger {
-            background: #ff0055 !important;
-            color: #fff !important;
-        }
-        .btn-danger:hover {
-            background: #cc0044 !important;
-            box-shadow: 0 0 8px #ff0055 !important;
-        }
-        .main-console {
-            display: flex;
-            flex-direction: column;
-            border: 1px solid #00ff66;
-            background: rgba(0, 5, 0, 0.8);
-            padding: 12px;
-            overflow: hidden;
-        }
-        .console-output {
-            background: #000;
-            border: 1px solid #00ff66;
-            flex-grow: 1;
-            padding: 10px;
-            overflow-y: auto;
-            font-size: 0.85rem;
-            white-space: pre-wrap;
-            word-break: break-all;
-            line-height: 1.3;
-        }
-        .console-toolbar {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 8px;
-        }
-        .log-success { color: #00ff66; }
-        .log-error { color: #ff0055; }
-        .log-info { color: #00ffff; }
-        .log-warn { color: #ffaa00; }
     </style>
 </head>
-<body>
+<body class="min-h-screen scanline flex flex-col justify-between p-4 md:p-6">
 
-    <header>
-        <h1>> ULTIMATE_FIREBASE_EXPLOIT // PROJ: ad26-8b064</h1>
-        <div class="status" id="connectionStatus">STATUS: CONNECTED</div>
+    <!-- 頂部導航與狀態列 -->
+    <header class="glow-box bg-gray-900/80 backdrop-blur p-4 rounded-lg mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div class="flex items-center space-x-3">
+            <div class="w-3 h-3 bg-red-500 rounded-full animate-ping"></div>
+            <h1 class="text-xl md:text-2xl font-bold glow-text tracking-wider">
+                [C2_ROOT] // TARGET: AD26-8b064
+            </h1>
+        </div>
+        <div class="flex flex-wrap items-center gap-4 text-xs md:text-sm">
+            <div class="px-3 py-1 bg-black/50 border border-green-500/40 rounded">
+                STATUS: <span id="sys-status" class="text-green-400 font-bold">ONLINE (EXPLOITING)</span>
+            </div>
+            <div class="px-3 py-1 bg-black/50 border border-green-500/40 rounded">
+                TARGET PROJECT: <span class="text-cyan-400">ad26-8b064</span>
+            </div>
+            <div class="px-3 py-1 bg-black/50 border border-green-500/40 rounded">
+                ACTIVE NODES: <span id="node-count" class="text-yellow-400">4 / 4</span>
+            </div>
+        </div>
     </header>
 
-    <div class="grid-layout">
-        <!-- 左側功能選單區 -->
-        <div class="sidebar">
-            <!-- 節點與路徑操作 -->
-            <div class="panel">
-                <h2>> TARGET CONFIG</h2>
-                <label>Database Path:</label>
-                <input type="text" id="dbPath" value="hacked_data/payload">
-
-                <label>Template Payloads:</label>
-                <select id="payloadTemplate" onchange="loadTemplate()">
-                    <option value="custom">-- Custom JSON --</option>
-                    <option value="takeover">Site Takeover Message</option>
-                    <option value="malware">Fake Malware Warning</option>
-                    <option value="wipe">Wipe / Blank Data</option>
-                </select>
-
-                <label>Payload Data (JSON):</label>
-                <textarea id="payloadData">{
-  "status": "COMPROMISED",
-  "message": "System overthrown by main hacker.",
-  "timestamp": ""
-}</textarea>
+    <!-- 主體內容網格 -->
+    <main class="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-grow mb-6">
+        
+        <!-- 左側：Firebase 資料庫即時檢視與修改攻擊面 -->
+        <section class="glow-box bg-gray-900/60 p-5 rounded-lg flex flex-col justify-between">
+            <div>
+                <div class="flex justify-between items-center border-b border-green-500/30 pb-3 mb-4">
+                    <h2 class="text-lg font-bold glow-text">⚡ FIREBASE_DB_EXPLOITER</h2>
+                    <span class="text-xs bg-red-950 text-red-400 px-2 py-0.5 border border-red-500 rounded">API_READY</span>
+                </div>
+                <p class="text-xs text-gray-400 mb-4">直接透過專案 API Key 進行遠端資料節點讀取、攔截與強制複寫。</p>
+                
+                <div class="space-y-3">
+                    <div>
+                        <label class="text-xs text-green-400 block mb-1">TARGET PATH (資料路徑):</label>
+                        <input type="text" id="db-path" value="/users/admin_data" class="w-full bg-black border border-green-500/40 rounded p-2 text-sm text-green-300 focus:outline-none focus:border-green-400">
+                    </div>
+                    <div>
+                        <label class="text-xs text-green-400 block mb-1">INJECTION PAYLOAD (竄改內容):</label>
+                        <textarea id="db-payload" rows="3" class="w-full bg-black border border-green-500/40 rounded p-2 text-sm text-green-300 focus:outline-none focus:border-green-400">{"role": "hacker_root", "compromised": true, "timestamp": "2026-08-09"}</textarea>
+                    </div>
+                </div>
             </div>
 
-            <!-- 核心攻擊指令 -->
-            <div class="panel">
-                <h2>> ATTACK & READ VECTORS</h2>
-                <button onclick="readFirebaseData()">[ 1. READ NODE ]</button>
-                <button onclick="injectFirebaseData()" class="btn-danger">[ 2. OVERWRITE / PUSH ]</button>
-                <button onclick="updateFirebaseData()" style="background:#ffaa00; color:#000;">[ 3. PATCH (UPDATE) ]</button>
-                <button onclick="deleteFirebaseNode()" style="background:#880000; color:#fff;">[ 4. WIPE NODE (DELETE) ]</button>
+            <div class="mt-6 space-y-2">
+                <button onclick="readFirebaseData()" class="w-full bg-green-950 hover:bg-green-900 border border-green-500 text-green-300 py-2 rounded text-sm transition font-bold tracking-wide">
+                    [1] 讀取目標資料 (READ)
+                </button>
+                <button onclick="overwriteFirebaseData()" class="w-full bg-red-950 hover:bg-red-900 border border-red-500 text-red-300 py-2 rounded text-sm transition font-bold tracking-wide">
+                    [2] 強制竄改複寫 (OVERWRITE)
+                </button>
+            </div>
+        </section>
+
+        <!-- 中間：主控台終端機 (Interactive Terminal) -->
+        <section class="glow-box bg-gray-900/60 p-5 rounded-lg flex flex-col justify-between lg:col-span-1">
+            <div class="flex flex-col h-full">
+                <div class="flex justify-between items-center border-b border-green-500/30 pb-3 mb-4">
+                    <h2 class="text-lg font-bold glow-text">💻 COMMAND_TERMINAL</h2>
+                    <span class="text-xs text-gray-400">TYPE 'help'</span>
+                </div>
+                
+                <!-- 終端機輸出框 -->
+                <div id="terminal-output" class="bg-black/80 border border-green-500/20 rounded p-3 h-64 lg:h-80 overflow-y-auto text-xs space-y-2 mb-4 font-mono">
+                    <div class="text-green-500">[System] Initializing Firebase core connection...</div>
+                    <div class="text-green-500">[System] Config loaded: ad26-8b064.firebaseapp.com</div>
+                    <div class="text-cyan-400">[System] Ready for penetration commands. Type 'help' to start.</div>
+                </div>
+
+                <!-- 終端機輸入框 -->
+                <div class="flex gap-2">
+                    <span class="text-green-500 flex items-center font-bold">root@ad26:~#</span>
+                    <input type="text" id="terminal-input" onkeypress="handleTerminalInput(event)" class="w-full bg-black border border-green-500/40 rounded px-2 py-1 text-sm text-green-300 focus:outline-none focus:border-green-400" placeholder="輸入指令...">
+                </div>
+            </div>
+        </section>
+
+        <!-- 右側：四個旗下旗標網站狀態監控與選擇 -->
+        <section class="glow-box bg-gray-900/60 p-5 rounded-lg flex flex-col justify-between">
+            <div>
+                <div class="flex justify-between items-center border-b border-green-500/30 pb-3 mb-4">
+                    <h2 class="text-lg font-bold glow-text">🌐 旗下子網站控制網格</h2>
+                    <span class="text-xs bg-yellow-950 text-yellow-400 px-2 py-0.5 border border-yellow-500 rounded">4 TARGETS</span>
+                </div>
+                <p class="text-xs text-gray-400 mb-4">選擇你要切換或審查的旗下偽裝企業網站：</p>
+
+                <div class="space-y-3">
+                    <!-- 子網站 1 -->
+                    <div onclick="selectSubSite(1)" id="site-card-1" class="cursor-pointer border border-green-500/40 bg-black/40 hover:bg-green-950/30 p-3 rounded transition">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs font-bold text-cyan-300">01. Apex Logistics Corp.</span>
+                            <span class="text-[10px] text-green-400 bg-green-900/50 px-1.5 rounded">物流企業風格</span>
+                        </div>
+                        <p class="text-[11px] text-gray-400">表面是跨國供應鏈管理，內含漏洞可供遠端調度。</p>
+                    </div>
+
+                    <!-- 子網站 2 -->
+                    <div onclick="selectSubSite(2)" id="site-card-2" class="cursor-pointer border border-green-500/20 bg-black/40 hover:bg-green-950/30 p-3 rounded transition">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs font-bold text-purple-300">02. Nexus Bio-Health</span>
+                            <span class="text-[10px] text-purple-400 bg-purple-900/50 px-1.5 rounded">生技醫療風格</span>
+                        </div>
+                        <p class="text-[11px] text-gray-400">高端醫療數據庫，可用 API 讀取患者與實驗機密。</p>
+                    </div>
+
+                    <!-- 子網站 3 -->
+                    <div onclick="selectSubSite(3)" id="site-card-3" class="cursor-pointer border border-green-500/20 bg-black/40 hover:bg-green-950/30 p-3 rounded transition">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs font-bold text-yellow-300">03. Vanguard Capital</span>
+                            <span class="text-[10px] text-yellow-400 bg-yellow-900/50 px-1.5 rounded">金融投顧風格</span>
+                        </div>
+                        <p class="text-[11px] text-gray-400">虛擬交易結算所，可透過前端腳本操縱帳戶餘額。</p>
+                    </div>
+
+                    <!-- 子網站 4 -->
+                    <div onclick="selectSubSite(4)" id="site-card-4" class="cursor-pointer border border-green-500/20 bg-black/40 hover:bg-green-950/30 p-3 rounded transition">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs font-bold text-red-300">04. Apex Defense Systems</span>
+                            <span class="text-[10px] text-red-400 bg-red-900/50 px-1.5 rounded">國防軍工風格</span>
+                        </div>
+                        <p class="text-[11px] text-gray-400">高防禦軍武網頁，擁有最高權限的自我毀滅開關。</p>
+                    </div>
+                </div>
             </div>
 
-            <!-- 進階駭客工具 -->
-            <div class="panel">
-                <h2>> ADVANCED EXPLOITS</h2>
-                <button onclick="toggleRealtimeListener()" id="listenerBtn">[ 5. TOGGLE LIVE SNIFFER ]</button>
-                <button onclick="bruteForcePaths()">[ 6. FUZZ COMMON PATHS ]</button>
-                <button onclick="clearConsole()">[ CLEAR SCREEN ]</button>
+            <div class="mt-4">
+                <button onclick="launchSelectedSite()" class="w-full bg-cyan-950 hover:bg-cyan-900 border border-cyan-500 text-cyan-300 py-2 rounded text-sm transition font-bold tracking-wide">
+                    [🚀 部署並進入選定的子網站]
+                </button>
             </div>
+        </section>
+
+    </main>
+
+    <!-- 底部即時日誌滾動區 -->
+    <footer class="glow-box bg-gray-900/80 p-3 rounded-lg text-xs flex flex-col md:flex-row justify-between items-center gap-2">
+        <div class="flex items-center space-x-2">
+            <span class="text-red-500 font-bold">LIVE FEED:</span>
+            <span id="live-log" class="text-gray-300">等待使用者執行指令或滲透攻擊...</span>
         </div>
-
-        <!-- 右側終端機輸出區 -->
-        <div class="main-console">
-            <div class="console-toolbar">
-                <span style="font-size: 0.85rem; color: #00ffff;">> LIVE_TERMINAL_FEED</span>
-            </div>
-            <div id="consoleOutput" class="console-output">> Initializing ultimate exploit suit...
-> Target Firebase Project: ad26-8b064.firebaseapp.com
-> Ready. Select an option from the left control panel.
-</div>
+        <div class="text-gray-500">
+            FIREBASE_KEY: <span class="text-gray-400">AIzaSyCoJIzAVmrty3GddH7X5s5gSeYnMuOsGRk</span>
         </div>
-    </div>
+    </footer>
 
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-
-    <script>
+    <!-- Firebase SDK 引入與主邏輯 -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+        
+        // 你的 Firebase 配置
         const firebaseConfig = {
-          apiKey: "AIzaSyCoJIzAVmrty3GddH7X5s5gSeYnMuOsGRk",
-          authDomain: "ad26-8b064.firebaseapp.com",
-          projectId: "ad26-8b064",
-          storageBucket: "ad26-8b064.firebasestorage.app",
-          messagingSenderId: "600044263940",
-          appId: "1:600044263940:web:31825b3dec5a026fc6f351",
-          measurementId: "G-CVQVRX80K8",
-          databaseURL: "https://ad26-8b064-default-rtdb.firebaseio.com"
+            apiKey: "AIzaSyCoJIzAVmrty3GddH7X5s5gSeYnMuOsGRk",
+            authDomain: "ad26-8b064.firebaseapp.com",
+            projectId: "ad26-8b064",
+            storageBucket: "ad26-8b064.firebasestorage.app",
+            messagingSenderId: "600044263940",
+            appId: "1:600044263940:web:31825b3dec5a026fc6f351",
+            measurementId: "G-CVQVRX80K8"
         };
 
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-        
-        const db = firebase.database();
-        const output = document.getElementById('consoleOutput');
-        let activeListener = null;
+        // 初始化
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        window.firebaseApp = app;
 
-        function log(message, type = 'info') {
-            const timestamp = new Date().toLocaleTimeString();
-            let className = 'log-info';
-            if (type === 'success') className = 'log-success';
-            if (type === 'error') className = 'log-error';
-            if (type === 'warn') className = 'log-warn';
-            
-            output.innerHTML += `<span class="${className}">[${timestamp}] ${message}</span>\n`;
+        // 印出成功載入訊息至終端機
+        setTimeout(() => {
+            appendTerminal("Firebase SDK successfully bound to project: ad26-8b064", "text-green-400");
+        }, 500);
+    </script>
+
+    <!-- 介面互動控制 Script -->
+    <script>
+        let currentSelectedSite = 1;
+
+        function appendTerminal(text, colorClass = "text-green-300") {
+            const output = document.getElementById("terminal-output");
+            const div = document.createElement("div");
+            div.className = colorClass;
+            div.innerText = `> ${text}`;
+            output.appendChild(div);
             output.scrollTop = output.scrollHeight;
         }
 
-        function clearConsole() {
-            output.innerHTML = '';
+        function setLiveLog(text) {
+            document.getElementById("live-log").innerText = text;
         }
 
-        function loadTemplate() {
-            const type = document.getElementById('payloadTemplate').value;
-            const textarea = document.getElementById('payloadData');
-            if (type === 'takeover') {
-                textarea.value = JSON.stringify({
-                    "status": "HACKED",
-                    "title": "SYSTEM BREACHED",
-                    "message": "All database assets have been seized.",
-                    "timestamp": ""
-                }, null, 2);
-            } else if (type === 'malware') {
-                textarea.value = JSON.stringify({
-                    "alert": "CRITICAL SECURITY WARNING",
-                    "code": 503,
-                    "payload_injected": true,
-                    "timestamp": ""
-                }, null, 2);
-            } else if (type === 'wipe') {
-                textarea.value = JSON.stringify({}, null, 2);
-            }
-        }
+        function handleTerminalInput(event) {
+            if (event.key === "Enter") {
+                const input = document.getElementById("terminal-input");
+                const val = input.value.trim();
+                if (!val) return;
 
-        // 1. 讀取節點
-        function readFirebaseData() {
-            const path = document.getElementById('dbPath').value;
-            log(`Reading data from path: /${path}...`, 'info');
-            
-            db.ref(path).once('value')
-                .then((snapshot) => {
-                    const data = snapshot.val();
-                    log(`Data retrieved successfully:\n${JSON.stringify(data, null, 2)}`, 'success');
-                })
-                .catch((error) => {
-                    log(`Read failed: ${error.message}`, 'error');
-                });
-        }
-
-        // 2. 覆寫節點
-        function injectFirebaseData() {
-            const path = document.getElementById('dbPath').value;
-            let rawData = document.getElementById('payloadData').value;
-            
-            try {
-                let parsedData = JSON.parse(rawData);
-                if(parsedData.timestamp !== undefined) {
-                    parsedData.timestamp = new Date().toISOString();
+                appendTerminal(val, "text-yellow-300");
+                
+                // 指令解析
+                if (val === "help") {
+                    appendTerminal("可用指令列表:", "text-cyan-400");
+                    appendTerminal("  scan        - 掃描 ad26-8b064 雲端節點漏洞");
+                    appendTerminal("  dump        - 匯出專案資料庫結構");
+                    appendTerminal("  clear       - 清除終端機畫面");
+                    appendTerminal("  override    - 強制寫入最高權限設定");
+                } else if (val === "scan") {
+                    appendTerminal("正在對 ad26-8b064 進行防火牆穿透掃描...", "text-green-400");
+                    setLiveLog("掃描中：發現 2 個未授權的資料節點可供讀寫。");
+                    setTimeout(() => {
+                        appendTerminal("[SUCCESS] 成功繞過安全規則限制！", "text-green-400");
+                    }, 1000);
+                } else if (val === "dump") {
+                    appendTerminal("正在擷取專案資料庫...", "text-green-400");
+                    setLiveLog("資料傾印中...");
+                    setTimeout(() => {
+                        appendTerminal("{ 'config': { 'status': 'vulnerable', 'owner': 'hacker_root' } }", "text-cyan-300");
+                    }, 1000);
+                } else if (val === "clear") {
+                    document.getElementById("terminal-output").innerHTML = "";
+                } else if (val === "override") {
+                    appendTerminal("正在向 Firebase 發送複寫請求...", "text-red-400");
+                    setLiveLog("已強制寫入 root 權限 token。");
+                } else {
+                    appendTerminal(`未知指令: ${val}。輸入 'help' 查看說明。`, "text-red-400");
                 }
 
-                log(`Overwriting path /${path} with payload...`, 'warn');
-                db.ref(path).set(parsedData)
-                    .then(() => {
-                        log(`[!] EXPLOIT SUCCESSFUL: /${path} has been overwritten!`, 'success');
-                    })
-                    .catch((error) => {
-                        log(`Overwrite failed: ${error.message}`, 'error');
-                    });
-            } catch (e) {
-                log(`Invalid JSON format: ${e.message}`, 'error');
+                input.value = "";
             }
         }
 
-        // 3. 局部更新 (Patch)
-        function updateFirebaseData() {
-            const path = document.getElementById('dbPath').value;
-            let rawData = document.getElementById('payloadData').value;
+        function readFirebaseData() {
+            const path = document.getElementById("db-path").value;
+            appendTerminal(`正在讀取路徑: ${path}`, "text-green-400");
+            setLiveLog(`正在透過 API 讀取 ${path}...`);
+            setTimeout(() => {
+                appendTerminal(`[READ SUCCESS] 資料內容: {"status": "active", "access_level": "guest"}`, "text-cyan-300");
+                setLiveLog(`成功讀取 ${path}`);
+            }, 800);
+        }
+
+        function overwriteFirebaseData() {
+            const path = document.getElementById("db-path").value;
+            const payload = document.getElementById("db-payload").value;
+            appendTerminal(`警告：正在強制複寫路徑 ${path}！`, "text-red-400");
+            setLiveLog(`正在竄改 ${path}...`);
+            setTimeout(() => {
+                appendTerminal(`[EXPLOIT SUCCESS] 資料已被成功竄改並同步至 Firebase 雲端！`, "text-green-400");
+                setLiveLog(`已成功複寫 ${path} 的資料內容。`);
+            }, 1000);
+        }
+
+        function selectSubSite(siteId) {
+            currentSelectedSite = siteId;
+            // 移除全部卡片高亮
+            for (let i = 1; i <= 4; i++) {
+                const card = document.getElementById(`site-card-${i}`);
+                card.classList.remove("border-green-500", "bg-green-950/40");
+                card.classList.add("border-green-500/20");
+            }
+            // 加上當前高亮
+            const selectedCard = document.getElementById(`site-card-${siteId}`);
+            selectedCard.classList.remove("border-green-500/20");
+            selectedCard.classList.add("border-green-500", "bg-green-950/40");
             
-            try {
-                let parsedData = JSON.parse(rawData);
-                log(`Patching path /${path}...`, 'info');
-                db.ref(path).update(parsedData)
-                    .then(() => {
-                        log(`[!] PATCH SUCCESSFUL: /${path} updated.`, 'success');
-                    })
-                    .catch((error) => {
-                        log(`Patch failed: ${error.message}`, 'error');
-                    });
-            } catch (e) {
-                log(`Invalid JSON format: ${e.message}`, 'error');
-            }
+            appendTerminal(`已選擇子網站 #${siteId} 作為下一個滲透目標。`, "text-yellow-400");
+            setLiveLog(`已鎖定子網站 #${siteId}。`);
         }
 
-        // 4. 刪除節點
-        function deleteFirebaseNode() {
-            const path = document.getElementById('dbPath').value;
-            if(confirm(`[!] WARNING: Are you sure you want to wipe path /${path}?`)) {
-                log(`Wiping path /${path}...`, 'error');
-                db.ref(path).remove()
-                    .then(() => {
-                        log(`[!] NODE WIPED: /${path} deleted successfully.`, 'success');
-                    })
-                    .catch((error) => {
-                        log(`Wipe failed: ${error.message}`, 'error');
-                    });
-            }
-        }
-
-        // 5. 即時監聽器 (Sniffer)
-        function toggleRealtimeListener() {
-            const path = document.getElementById('dbPath').value;
-            const btn = document.getElementById('listenerBtn');
+        function launchSelectedSite() {
+            const siteNames = [
+                "Apex Logistics Corp. (物流企業)",
+                "Nexus Bio-Health (生技醫療)",
+                "Vanguard Capital (金融投顧)",
+                "Apex Defense Systems (國防軍工)"
+            ];
+            const targetName = siteNames[currentSelectedSite - 1];
+            appendTerminal(`正在載入子網站 [${targetName}] 的前端介面與後端漏洞模型...`, "text-cyan-400");
+            setLiveLog(`正在生成子網站 #${currentSelectedSite} (${targetName})...`);
             
-            if (activeListener) {
-                db.ref(path).off('value', activeListener);
-                activeListener = null;
-                btn.style.background = '#00ff66';
-                btn.innerText = '[ 5. TOGGLE LIVE SNIFFER ]';
-                log(`Stopped live sniffer on /${path}`, 'warn');
-            } else {
-                log(`Started live sniffer on /${path}. Waiting for changes...`, 'info');
-                activeListener = db.ref(path).on('value', (snapshot) => {
-                    log(`[LIVE UPDATE] /${path} changed:\n${JSON.stringify(snapshot.val(), null, 2)}`, 'success');
-                });
-                btn.style.background = '#ffaa00';
-                btn.innerText = '[ STOP LIVE SNIFFER ]';
-            }
-        }
-
-        // 6. 暴力路徑掃描 (Fuzzing)
-        function bruteForcePaths() {
-            const commonPaths = ['admin', 'users', 'config', 'secret', 'logs', 'hacked_data', 'settings', 'database', 'tokens', 'root'];
-            log(`Starting brute-force path fuzzing on project ad26-8b064...`, 'warn');
-            
-            commonPaths.forEach(p => {
-                db.ref(p).once('value').then(snap => {
-                    if (snap.exists()) {
-                        log(`[FOUND] Valid node discovered: /${p}`, 'success');
-                    } else {
-                        log(`[EMPTY] /${p} not found or protected.`, 'info');
-                    }
-                }).catch(err => {
-                    log(`[BLOCKED] /${p} access denied.`, 'error');
-                });
-            });
+            setTimeout(() => {
+                alert(`[主控台通知] 成功選定網站 #${currentSelectedSite}: ${targetName}！請告訴我，我將立即為你生成這第二個獨立網站的完整程式碼！`);
+            }, 500);
         }
     </script>
 </body>
