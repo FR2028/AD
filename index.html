@@ -497,11 +497,14 @@
                     status: "SYSTEM_COMPROMISED",
                     timestamp: Date.now(),
                     malicious_message: "System fully hijacked via Firebase API overwrite!",
-                    hack_code: Math.random().toString(36).substring(7).toUpperCase()
+                    hack_code: Math.random().toString(36).substring(7).toUpperCase(),
+                    deface_trigger: {
+                        active: true
+                    }
                 };
                 await update(dbRef, mutated);
                 document.getElementById('rtdb-data-view').innerText = JSON.stringify(mutated, null, 2);
-                printTerminal(`[SUCCESS] Data mutated! Hack signature injected into database.\n`);
+                printTerminal(`[SUCCESS] Data mutated! Hack signature and deface trigger injected into database.\n`);
                 logEvent(`Data successfully mutated for ${t.name}`);
             } catch (e) {
                 printTerminal(`[ERROR] Mutation failed: ${e.message}\n`);
